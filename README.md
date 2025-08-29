@@ -409,12 +409,10 @@
             analyzeSpinner.classList.remove('hidden');
             analyzeText.textContent = 'Analyzing...';
             
-            const finalPrompt = `You are a professional photo editor and AI assistant. Based on the provided "${eventType.value}" photo, provide a concise, detailed, and professional list of Lightroom-style editing suggestions with specific numerical values to make the image look "${styleType.value}". Focus on the main editing sliders (Exposure, Contrast, Highlights, Shadows, Whites, Blacks, Saturation, Vibrance, Temperature, Tint, Clarity, Dehaze). Provide the suggestions in a clear, bulleted format. For example:
-- Exposure: +0.7
-- Contrast: -10
-- Saturation: +15
-- Temperature: +10
-- Clarity: +5`;
+            const finalPrompt = `You are a professional photo editor and AI assistant. Based on the provided "${eventType.value}" photo, provide a highly detailed list of Lightroom-style editing suggestions with specific numerical values to make the image look "${styleType.value}". Focus on all main editing sliders (Exposure, Contrast, Highlights, Shadows, Whites, Blacks, Texture, Clarity, Dehaze, Vibrance, Saturation, Temperature, Tint, Sharpening, Noise Reduction). For each adjustment, provide a brief, one-sentence explanation of its purpose. Provide the suggestions in a clear, bulleted format. For example:
+- Exposure: +0.7 (Increases overall image brightness to better showcase details).
+- Contrast: -10 (Reduces the difference between light and dark tones for a softer look).
+- Highlights: -20 (Recovers detail in bright areas).`;
             
             await processAIRequest(finalPrompt);
         }
@@ -448,12 +446,10 @@
             
             analyzeChatText.textContent = 'Analyzing...';
             
-            const finalPrompt = `You are a professional photo editor and AI assistant. The user wants to apply the following editing style: "${prompt}". Based on the image, provide a concise, detailed, and professional list of Lightroom-style editing suggestions with specific numerical values for a user to follow. Focus on the main editing sliders (Exposure, Contrast, Highlights, Shadows, Whites, Blacks, Saturation, Vibrance, Temperature, Tint, Clarity, Dehaze). Provide the suggestions in a clear, bulleted format. For example:
-- Exposure: +0.7
-- Contrast: -10
-- Saturation: +15
-- Temperature: +10
-- Clarity: +5`;
+            const finalPrompt = `You are a professional photo editor and AI assistant. The user wants to apply the following editing style: "${prompt}". Based on the image, provide a highly detailed list of Lightroom-style editing suggestions with specific numerical values for a user to follow. Focus on all main editing sliders (Exposure, Contrast, Highlights, Shadows, Whites, Blacks, Texture, Clarity, Dehaze, Vibrance, Saturation, Temperature, Tint, Sharpening, Noise Reduction). For each adjustment, provide a brief, one-sentence explanation of its purpose. Provide the suggestions in a clear, bulleted format. For example:
+- Exposure: +0.7 (Increases overall image brightness to better showcase details).
+- Contrast: -10 (Reduces the difference between light and dark tones for a softer look).
+- Highlights: -20 (Recovers detail in bright areas).`;
 
             await processAIRequest(finalPrompt);
         }
