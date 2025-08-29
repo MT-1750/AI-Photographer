@@ -325,7 +325,7 @@
 
         // ---------- ANALYZE: Function to check if prompt is photography-related ----------
         async function isPromptRelevant(prompt) {
-            const relevancePrompt = `Is the following user prompt related to photography, photo editing, or visual art? Answer only with "Yes" or "No".\n\nPrompt: "${prompt}"`;
+            const relevancePrompt = `Classify the following user prompt as either "Photography-related" or "Not Photography-related". Be strict with your classification.\n\nPrompt: "${prompt}"`;
             const payload = {
                 contents: [{ parts: [{ text: relevancePrompt }] }]
             };
@@ -337,7 +337,7 @@
                 });
                 const result = await response.json();
                 const text = result?.candidates?.[0]?.content?.parts?.[0]?.text;
-                return text && text.trim().toLowerCase() === 'yes';
+                return text && text.trim().toLowerCase() === 'photography-related';
             } catch (error) {
                 console.error("Relevance check failed:", error);
                 return false;
