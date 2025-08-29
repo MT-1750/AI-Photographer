@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -323,23 +323,32 @@
             } catch (e) { showStatus('Recompress failed.', true); }
         });
 
-        // ---------- ANALYZE: Function to handle both analysis types ----------
-        async function analyzePhoto(promptText) {
-            if (isProcessing) return;
-            if (!uploadFile) { showStatus('Please upload an image first.', true); return; }
+        // ---------- ANALYZE: Function to check if prompt is photography-related ----------
+        async function isPromptRelevant(prompt) {
+            const relevancePrompt = `Is the following user prompt related to photography, photo editing, or visual art? Answer only with "Yes" or "No".\n\nPrompt: "${prompt}"`;
+            const payload = {
+                contents: [{ parts: [{ text: relevancePrompt }] }]
+            };
+            try {
+                const response = await fetch(GENERATE_ENDPOINT + API_KEY, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                const text = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+                return text && text.trim().toLowerCase() === 'yes';
+            } catch (error) {
+                console.error("Relevance check failed:", error);
+                return false;
+            }
+        }
 
-            isProcessing = true;
-            analyzeSpinner.classList.add('hidden');
-            analyzeChatSpinner.classList.add('hidden');
-            analyzeText.textContent = 'Get Suggestions';
-            analyzeChatText.textContent = 'Ask AI';
-            
-            if (promptText) {
-                analyzeChatSpinner.classList.remove('hidden');
-                analyzeChatText.textContent = 'Analyzing...';
-            } else {
-                analyzeSpinner.classList.remove('hidden');
-                analyzeText.textContent = 'Analyzing...';
+        // ---------- ANALYZE: Function to process AI requests ----------
+        async function processAIRequest(finalPrompt) {
+            if (!uploadFile) {
+                showStatus('Please upload an image first.', true);
+                return;
             }
 
             suggestionsDiv.innerHTML = '<div class="text-center text-slate-400"><span class="spinner mr-2"></span>Analyzing image — this may take a few seconds.</div>';
@@ -347,23 +356,6 @@
 
             try {
                 const base64Image = await blobToBase64(uploadFile);
-
-                let finalPrompt;
-                if (promptText) {
-                    finalPrompt = `You are a professional photo editor and AI assistant. The user wants to apply the following editing style: "${promptText}". Based on the image, provide a concise, detailed, and professional list of Lightroom-style editing suggestions with specific numerical values for a user to follow. Focus on the main editing sliders (Exposure, Contrast, Highlights, Shadows, Whites, Blacks, Saturation, Vibrance, Temperature, Tint, Clarity, Dehaze). Provide the suggestions in a clear, bulleted format. For example:
-- Exposure: +0.7
-- Contrast: -10
-- Saturation: +15
-- Temperature: +10
-- Clarity: +5`;
-                } else {
-                    finalPrompt = `You are a professional photo editor and AI assistant. Based on the provided "${eventType.value}" photo, provide a concise, detailed, and professional list of Lightroom-style editing suggestions with specific numerical values to make the image look "${styleType.value}". Focus on the main editing sliders (Exposure, Contrast, Highlights, Shadows, Whites, Blacks, Saturation, Vibrance, Temperature, Tint, Clarity, Dehaze). Provide the suggestions in a clear, bulleted format. For example:
-- Exposure: +0.7
-- Contrast: -10
-- Saturation: +15
-- Temperature: +10
-- Clarity: +5`;
-                }
 
                 const descriptionPayload = {
                     contents: [{
@@ -405,23 +397,70 @@
             }
         }
 
-        // Event listeners for both buttons
-        analyzeBtn.addEventListener('click', () => {
+        // ---------- ANALYZE: Separate handler for Dropdown options ----------
+        async function handleDropdownAnalysis() {
+            if (isProcessing) return;
             if (!eventType.value || !styleType.value) {
-                showStatus('Please select an event type and a desired style.', true);
+                showStatus('Please select a photography genre and editing style.', true);
                 return;
             }
-            analyzePhoto();
-        });
 
-        analyzeChatBtn.addEventListener('click', () => {
+            isProcessing = true;
+            analyzeSpinner.classList.remove('hidden');
+            analyzeText.textContent = 'Analyzing...';
+            
+            const finalPrompt = `You are a professional photo editor and AI assistant. Based on the provided "${eventType.value}" photo, provide a concise, detailed, and professional list of Lightroom-style editing suggestions with specific numerical values to make the image look "${styleType.value}". Focus on the main editing sliders (Exposure, Contrast, Highlights, Shadows, Whites, Blacks, Saturation, Vibrance, Temperature, Tint, Clarity, Dehaze). Provide the suggestions in a clear, bulleted format. For example:
+- Exposure: +0.7
+- Contrast: -10
+- Saturation: +15
+- Temperature: +10
+- Clarity: +5`;
+            
+            await processAIRequest(finalPrompt);
+        }
+
+        // ---------- ANALYZE: Separate handler for Chat Assistant ----------
+        async function handleChatAnalysis() {
+            if (isProcessing) return;
             const prompt = userPrompt.value.trim();
             if (!prompt) {
                 showStatus('Please enter your request in the text box.', true);
                 return;
             }
-            analyzePhoto(prompt);
-        });
+            if (!uploadFile) {
+                showStatus('Please upload an image first.', true);
+                return;
+            }
+
+            isProcessing = true;
+            analyzeChatSpinner.classList.remove('hidden');
+            analyzeChatText.textContent = 'Checking prompt...';
+
+            const relevant = await isPromptRelevant(prompt);
+            
+            if (!relevant) {
+                showStatus('This assistant is for photography and photo editing only. Please enter a request related to your photo.', true);
+                isProcessing = false;
+                analyzeChatSpinner.classList.add('hidden');
+                analyzeChatText.textContent = 'Ask AI';
+                return;
+            }
+            
+            analyzeChatText.textContent = 'Analyzing...';
+            
+            const finalPrompt = `You are a professional photo editor and AI assistant. The user wants to apply the following editing style: "${prompt}". Based on the image, provide a concise, detailed, and professional list of Lightroom-style editing suggestions with specific numerical values for a user to follow. Focus on the main editing sliders (Exposure, Contrast, Highlights, Shadows, Whites, Blacks, Saturation, Vibrance, Temperature, Tint, Clarity, Dehaze). Provide the suggestions in a clear, bulleted format. For example:
+- Exposure: +0.7
+- Contrast: -10
+- Saturation: +15
+- Temperature: +10
+- Clarity: +5`;
+
+            await processAIRequest(finalPrompt);
+        }
+
+        // Event listeners for both buttons
+        analyzeBtn.addEventListener('click', handleDropdownAnalysis);
+        analyzeChatBtn.addEventListener('click', handleChatAnalysis);
 
         // ---------- SIMPLE "MARKDOWN" RENDER (limited) ----------
         function renderMarkdownSimple(md) {
