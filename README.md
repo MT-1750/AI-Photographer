@@ -1,18 +1,21 @@
-<!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>AI Photo Assistant — Superb</title>
+    <title>AI Photography Assistant</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <meta name="description" content="Upload a photo, choose event type, and get professional Lightroom-style suggestions from AI." />
     <style>
         :root { --glass: rgba(255,255,255,0.7); --glass-dark: rgba(17,24,39,0.5); }
-        body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+        body { 
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; 
+            background-color: #ffffff;
+            background-image: url('data:image/svg+xml,%3Csvg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="%23e0f2fe" fill-opacity="1"%3E%3Cpath d="M0 40L40 0H20L0 20V40ZM40 40V20L20 40H40Z"/%3E%3C/g%3E%3C/svg%3E');
+        }
         .file-drop { transition: box-shadow .18s ease, transform .12s ease; }
         .file-drop.dragover { box-shadow: 0 10px 30px rgba(59,130,246,.18); transform: translateY(-4px); }
         .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
-        /* small spinner */
         .spinner { border:4px solid rgba(0,0,0,0.06); border-left-color: currentColor; border-radius:50%; width:1em; height:1em; display:inline-block; animation:spin 0.9s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
         pre.prose { white-space:pre-wrap; word-break:break-word; }
@@ -20,15 +23,13 @@
         .prose-custom ul li { margin-bottom: 5px; }
     </style>
 </head>
-<body class="bg-gradient-to-br from-indigo-500 via-sky-500 to-rose-500 min-h-screen flex items-center justify-center p-6">
-    <main class="w-full max-w-6xl">
+<body class="min-h-screen flex flex-col items-center justify-center p-6">
+    <main class="w-full max-w-6xl flex-grow flex items-center justify-center">
         <div class="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl overflow-hidden grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
-            <!-- LEFT: upload + controls -->
             <section class="p-6 flex flex-col gap-4">
-                <h1 class="text-3xl font-extrabold text-slate-800">AI Photo Assistant</h1>
-                <p class="text-sm text-slate-600">Upload a photo (drag & drop works), pick an event type, and receive professional editing suggestions. The app resizes images client-side to reduce upload size.</p>
+                <h1 class="text-3xl font-extrabold text-slate-800">AI Photography Assistant</h1>
+                <p class="text-sm text-slate-600">Upload a photo (drag & drop works), pick a style, and receive professional editing suggestions. The app resizes images client-side to reduce upload size.</p>
 
-                <!-- Drop zone -->
                 <div id="drop" tabindex="0"
                      class="file-drop mt-3 p-5 border-2 border-dashed border-slate-200 rounded-xl flex flex-col items-center gap-3 bg-white focus:outline-none focus:ring-4 focus:ring-blue-200">
                     <svg class="w-12 h-12 text-sky-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden>
@@ -43,7 +44,6 @@
                     <input id="file-input" type="file" accept="image/*" class="sr-only" />
                 </div>
 
-                <!-- preview -->
                 <div id="preview-card" class="hidden mt-2 rounded-lg overflow-hidden border border-slate-200 bg-slate-50">
                     <img id="preview-img" alt="preview" class="w-full object-contain max-h-72 bg-black/2" />
                     <div class="flex items-center justify-between p-3">
@@ -58,44 +58,88 @@
                     </div>
                 </div>
 
-                <!-- event selector -->
-                <label class="block mt-2 text-sm font-semibold text-slate-700">Event Type</label>
-                <select id="event-type" class="w-full p-3 rounded-lg bg-slate-100 text-slate-900">
-                    <option value="" disabled selected>Select photography genre</option>
-                    <optgroup label="Outdoor">
-                        <option>Wedding</option>
-                        <option>Landscape</option>
-                        <option>Street Photography</option>
-                        <option>Sports</option>
-                        <option>Nature</option>
-                        <option>Family</option>
-                        <option>Portrait (Outdoor)</option>
-                        <option>Concert (Outdoor)</option>
-                    </optgroup>
-                    <optgroup label="Indoor">
-                        <option>Portrait (Indoor)</option>
-                        <option>Product</option>
-                        <option>Food</option>
-                        <option>Event (Corporate)</option>
-                        <option>Real Estate</option>
-                        <option>Studio</option>
-                        <option>Concert (Indoor)</option>
-                    </optgroup>
-                </select>
+                <div class="mt-2 p-4 rounded-xl border border-slate-200 bg-slate-50">
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Option 1: Choose from Menus</label>
+                    <label class="block text-sm font-medium text-slate-600 mb-1">Photography Genre</label>
+                    <select id="event-type" class="w-full p-3 rounded-lg bg-white text-slate-900 mb-3">
+                        <option value="" disabled selected>Select photography genre</option>
+                        <optgroup label="People & Events">
+                            <option>Wedding</option>
+                            <option>Portrait (Outdoor)</option>
+                            <option>Portrait (Indoor)</option>
+                            <option>Street Photography</option>
+                            <option>Family</option>
+                            <option>Sports</option>
+                            <option>Maternity</option>
+                            <option>Engagements</option>
+                            <option>Boudoir</option>
+                            <option>Headshots</option>
+                            <option>Studio Portraits</option>
+                            <option>Concert</option>
+                            <option>Conference</option>
+                            <option>Fashion (Studio)</option>
+                            <option>Corporate Event</option>
+                        </optgroup>
+                        <optgroup label="Nature & Places">
+                            <option>Landscape</option>
+                            <option>Nature</option>
+                            <option>Wildlife</option>
+                            <option>Urban Exploration</option>
+                            <option>Architectural</option>
+                            <option>Real Estate</option>
+                            <option>Macro</option>
+                            <option>Astrophotography</option>
+                            <option>Aerial</option>
+                            <option>Adventure</option>
+                        </optgroup>
+                        <optgroup label="Products & Art">
+                            <option>Product</option>
+                            <option>Food</option>
+                            <option>Still Life</option>
+                            <option>Fine Art Nudes</option>
+                            <option>Art Exhibitions</option>
+                            <option>Hospitality</option>
+                            <option>Automotive</option>
+                            <option>Artwork Reproduction</option>
+                        </optgroup>
+                    </select>
 
-                <!-- actions -->
-                <div class="flex flex-col sm:flex-row gap-3 mt-3">
-                    <button id="analyze-btn" class="flex-1 inline-flex items-center justify-center gap-3 px-4 py-3 rounded-xl bg-sky-600 text-white font-semibold shadow hover:scale-[1.01] transition-transform"> <span id="analyze-spinner" class="spinner hidden" aria-hidden></span> <span id="analyze-text">Get Suggestions</span></button>
-                    <button id="start-over" class="flex-1 px-4 py-3 rounded-xl bg-slate-100 text-slate-800 font-semibold transition-transform hover:scale-[1.01]">Start Over</button>
+                    <label class="block text-sm font-medium text-slate-600 mb-1">Editing Style</label>
+                    <select id="style-type" class="w-full p-3 rounded-lg bg-white text-slate-900">
+                        <option value="" disabled selected>Select a style</option>
+                        <option>Cinematic</option>
+                        <option>Moody</option>
+                        <option>Professional</option>
+                        <option>Vibrant & Colorful</option>
+                        <option>Soft & Dreamy</option>
+                        <option>Black & White</option>
+                        <option>High Key</option>
+                        <option>Low Key</option>
+                        <option>Vintage</option>
+                        <option>Minimalist</option>
+                    </select>
+
+                    <button id="analyze-btn" class="w-full mt-3 flex items-center justify-center gap-3 px-4 py-3 rounded-xl bg-sky-600 text-white font-semibold shadow hover:scale-[1.01] transition-transform">
+                        <span id="analyze-spinner" class="spinner hidden" aria-hidden></span>
+                        <span id="analyze-text">Get Suggestions</span>
+                    </button>
+                </div>
+                
+                <div class="mt-2 p-4 rounded-xl border border-slate-200 bg-slate-50">
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Option 2: Ask the AI Assistant</label>
+                    <textarea id="user-prompt" rows="3" class="w-full p-3 rounded-lg bg-white text-slate-900 border-none focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="e.g., 'This is a photo of a moody, foggy forest. Suggest editing to make it look cinematic.'"></textarea>
+                    <button id="analyze-chat-btn" class="w-full mt-3 flex items-center justify-center gap-3 px-4 py-3 rounded-xl bg-sky-600 text-white font-semibold shadow hover:scale-[1.01] transition-transform">
+                        <span id="analyze-chat-spinner" class="spinner hidden" aria-hidden></span>
+                        <span id="analyze-chat-text">Ask AI</span>
+                    </button>
                 </div>
 
-                <p id="note" class="text-xs text-slate-500 mt-2">Your API key is handled directly by the frontend for a fast, seamless experience.</p>
+                <button id="start-over" class="w-full px-4 py-3 mt-3 rounded-xl bg-slate-100 text-slate-800 font-semibold transition-transform hover:scale-[1.01]">Start Over</button>
 
-                <!-- status -->
+                <p id="note" class="text-xs text-slate-500 mt-2 text-center">Your API key is handled directly by the frontend for a fast, seamless experience.</p>
                 <div id="status" class="text-sm mt-2 text-center text-rose-600 hidden"></div>
             </section>
 
-            <!-- RIGHT: suggestions -->
             <section class="p-6 flex flex-col gap-4">
                 <div class="flex items-start justify-between gap-4">
                     <div>
@@ -111,17 +155,20 @@
         </div>
     </main>
 
+    <footer class="mt-8 text-center text-slate-600 text-sm">
+        <p>© 2025 AI Photography Assistant. All rights reserved.</p>
+    </footer>
+
     <script>
         // ---------- CONFIG ----------
         const GENERATE_ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=';
-        const API_KEY = "AIzaSyBdjtZ6z720PjiuhqLtXiJXm14SL1afXbU"; // Your provided API key
-        const MAX_UPLOAD_BYTES = 6 * 1024 * 1024;  // 6 MB target after resizing
+        const API_KEY = "AIzaSyBdjtZ6z720PjiuhqLtXiJXm14SL1afXbU";
+        const MAX_UPLOAD_BYTES = 6 * 1024 * 1024;
 
         // ---------- UI REFS ----------
         const drop = document.getElementById('drop');
         const fileInput = document.getElementById('file-input');
         const browseBtn = document.getElementById('browse-btn');
-        const dropText = document.getElementById('drop-text');
         const previewCard = document.getElementById('preview-card');
         const previewImg = document.getElementById('preview-img');
         const imgName = document.getElementById('img-name');
@@ -129,21 +176,25 @@
         const removeBtn = document.getElementById('remove-btn');
         const recompressBtn = document.getElementById('recompress-btn');
         const eventType = document.getElementById('event-type');
+        const styleType = document.getElementById('style-type');
+        const userPrompt = document.getElementById('user-prompt');
         const analyzeBtn = document.getElementById('analyze-btn');
+        const analyzeChatBtn = document.getElementById('analyze-chat-btn');
         const analyzeText = document.getElementById('analyze-text');
+        const analyzeChatText = document.getElementById('analyze-chat-text');
         const analyzeSpinner = document.getElementById('analyze-spinner');
+        const analyzeChatSpinner = document.getElementById('analyze-chat-spinner');
         const suggestionsDiv = document.getElementById('suggestions');
-        const initialDiv = document.getElementById('initial');
         const statusDiv = document.getElementById('status');
         const startOverBtn = document.getElementById('start-over');
 
         // ---------- STATE ----------
-        let selectedFile = null;    // original File
-        let uploadFile = null;      // possibly recompressed File to send
+        let selectedFile = null;
+        let uploadFile = null;
         let isProcessing = false;
 
         // ---------- UTIL: show status ----------
-        function showStatus(msg, isError=false, timeout=5000) {
+        function showStatus(msg, isError = false, timeout = 5000) {
             statusDiv.textContent = msg;
             statusDiv.classList.remove('hidden');
             statusDiv.classList.toggle('text-rose-600', isError);
@@ -154,8 +205,8 @@
         // ---------- UTIL: bytes to human ----------
         function humanBytes(bytes) {
             if (bytes < 1024) return bytes + ' B';
-            if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
-            return (bytes/(1024*1024)).toFixed(2) + ' MB';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
         }
 
         // ---------- IMAGE: client-side resize/compress ----------
@@ -169,18 +220,16 @@
         }
 
         async function resizeImageFile(file, targetBytes = MAX_UPLOAD_BYTES) {
-            // Use canvas to downscale & compress until under targetBytes or quality floor reached
             const img = await fileToImage(file);
-            const MAX_DIM = 2400; // cap dimension for big cameras
+            const MAX_DIM = 2400;
             let [w, h] = [img.naturalWidth, img.naturalHeight];
-            let scale = Math.min(1, MAX_DIM / Math.max(w,h));
+            let scale = Math.min(1, MAX_DIM / Math.max(w, h));
             let canvas = document.createElement('canvas');
-            canvas.width = Math.round(w*scale);
-            canvas.height = Math.round(h*scale);
+            canvas.width = Math.round(w * scale);
+            canvas.height = Math.round(h * scale);
             let ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-            let quality = 0.92; // start high, reduce if needed
+            let quality = 0.92;
             let blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', quality));
             let attempts = 0;
             while (blob.size > targetBytes && quality > 0.45 && attempts < 8) {
@@ -188,7 +237,6 @@
                 blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', quality));
                 attempts++;
             }
-            // if still too large, downscale more
             while (blob.size > targetBytes && (canvas.width > 800 || canvas.height > 800)) {
                 canvas.width = Math.round(canvas.width * 0.85);
                 canvas.height = Math.round(canvas.height * 0.85);
@@ -230,11 +278,10 @@
             if (e.target.files?.[0]) handleFile(e.target.files[0]);
         });
 
-        // drag & drop
-        ['dragenter','dragover'].forEach(ev => {
+        ['dragenter', 'dragover'].forEach(ev => {
             drop.addEventListener(ev, (e) => { e.preventDefault(); e.stopPropagation(); drop.classList.add('dragover'); });
         });
-        ['dragleave','drop'].forEach(ev => {
+        ['dragleave', 'drop'].forEach(ev => {
             drop.addEventListener(ev, (e) => { e.preventDefault(); e.stopPropagation(); drop.classList.remove('dragover'); });
         });
         drop.addEventListener('drop', (e) => {
@@ -245,7 +292,6 @@
         async function handleFile(file) {
             statusDiv.classList.add('hidden');
             if (!file.type.startsWith('image/')) { showStatus('Please upload an image file.', true); return; }
-            // If large, auto-resize (non-blocking UI with spinner)
             if (file.size > MAX_UPLOAD_BYTES) {
                 showStatus('Large image detected — compressing locally before upload...', false, 4000);
                 try {
@@ -274,74 +320,67 @@
                 const recompressed = await resizeImageFile(selectedFile, MAX_UPLOAD_BYTES);
                 setPreview(recompressed);
                 showStatus('Image recompressed.', false, 2000);
-            } catch(e) { showStatus('Recompress failed.', true); }
+            } catch (e) { showStatus('Recompress failed.', true); }
         });
 
-        // ---------- ANALYZE: call backend ----------
-        analyzeBtn.addEventListener('click', async () => {
+        // ---------- ANALYZE: Function to handle both analysis types ----------
+        async function analyzePhoto(promptText) {
             if (isProcessing) return;
             if (!uploadFile) { showStatus('Please upload an image first.', true); return; }
-            if (!eventType.value) { showStatus('Please choose an event type.', true); return; }
 
             isProcessing = true;
-            analyzeSpinner.classList.remove('hidden');
-            analyzeText.textContent = 'Analyzing...';
+            analyzeSpinner.classList.add('hidden');
+            analyzeChatSpinner.classList.add('hidden');
+            analyzeText.textContent = 'Get Suggestions';
+            analyzeChatText.textContent = 'Ask AI';
+            
+            if (promptText) {
+                analyzeChatSpinner.classList.remove('hidden');
+                analyzeChatText.textContent = 'Analyzing...';
+            } else {
+                analyzeSpinner.classList.remove('hidden');
+                analyzeText.textContent = 'Analyzing...';
+            }
+
             suggestionsDiv.innerHTML = '<div class="text-center text-slate-400"><span class="spinner mr-2"></span>Analyzing image — this may take a few seconds.</div>';
             statusDiv.classList.add('hidden');
-            
-            try {
-                // Convert the uploaded image file to a base64 string
-                const base64Image = await blobToBase64(uploadFile);
-                const prompt = `You are a professional photo editor and AI assistant. Based on the provided image and the fact that it is a "${eventType.value}" photo, please provide specific, actionable Lightroom-style editing suggestions in the following categories:
-- **Exposure & Lighting**
-- **White Balance & Color**
-- **Composition**
-- **Sharpening & Details**
-- **Overall Mood**
-Provide a concise, detailed, and professional-sounding list of suggestions.`;
 
-                // First, get a description of the photo
+            try {
+                const base64Image = await blobToBase64(uploadFile);
+
+                let finalPrompt;
+                if (promptText) {
+                    finalPrompt = `You are a professional photo editor and AI assistant. The user wants to apply the following editing style: "${promptText}". Based on the image, provide a concise, detailed, and professional list of Lightroom-style editing suggestions with specific numerical values for a user to follow. Focus on the main editing sliders (Exposure, Contrast, Highlights, Shadows, Whites, Blacks, Saturation, Vibrance, Temperature, Tint, Clarity, Dehaze). Provide the suggestions in a clear, bulleted format. For example:
+- Exposure: +0.7
+- Contrast: -10
+- Saturation: +15
+- Temperature: +10
+- Clarity: +5`;
+                } else {
+                    finalPrompt = `You are a professional photo editor and AI assistant. Based on the provided "${eventType.value}" photo, provide a concise, detailed, and professional list of Lightroom-style editing suggestions with specific numerical values to make the image look "${styleType.value}". Focus on the main editing sliders (Exposure, Contrast, Highlights, Shadows, Whites, Blacks, Saturation, Vibrance, Temperature, Tint, Clarity, Dehaze). Provide the suggestions in a clear, bulleted format. For example:
+- Exposure: +0.7
+- Contrast: -10
+- Saturation: +15
+- Temperature: +10
+- Clarity: +5`;
+                }
+
                 const descriptionPayload = {
                     contents: [{
-                        parts: [
-                            { text: "Please describe this photo in one short, descriptive paragraph." },
-                            {
-                                inlineData: {
-                                    mimeType: uploadFile.type,
-                                    data: base64Image
-                                }
-                            }
-                        ]
+                        parts: [{ text: "Please describe this photo in one short, descriptive paragraph." }, { inlineData: { mimeType: uploadFile.type, data: base64Image } }]
                     }],
                 };
 
-                const descResp = await fetch(GENERATE_ENDPOINT + API_KEY, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(descriptionPayload)
-                });
+                const descResp = await fetch(GENERATE_ENDPOINT + API_KEY, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(descriptionPayload) });
                 const descResult = await descResp.json();
                 const description = descResult?.candidates?.[0]?.content?.parts?.[0]?.text || 'No description available.';
 
-                // Then, get the editing suggestions
                 const suggestionsPayload = {
                     contents: [{
-                        parts: [
-                            { text: prompt },
-                            {
-                                inlineData: {
-                                    mimeType: uploadFile.type,
-                                    data: base64Image
-                                }
-                            }
-                        ]
+                        parts: [{ text: finalPrompt }, { inlineData: { mimeType: uploadFile.type, data: base64Image } }]
                     }],
                 };
-                const sugResp = await fetch(GENERATE_ENDPOINT + API_KEY, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(suggestionsPayload)
-                });
+                const sugResp = await fetch(GENERATE_ENDPOINT + API_KEY, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(suggestionsPayload) });
                 const sugResult = await sugResp.json();
                 const suggestions = sugResult?.candidates?.[0]?.content?.parts?.[0]?.text;
 
@@ -358,30 +397,42 @@ Provide a concise, detailed, and professional-sounding list of suggestions.`;
                 suggestionsDiv.innerHTML = '<div class="text-center text-rose-600">Failed to generate suggestions. See console for details.</div>';
                 showStatus('Failed to generate suggestions. Check the console for details.', true, 7000);
             } finally {
-                analyzeSpinner.classList.add('hidden');
-                analyzeText.textContent = 'Get Suggestions';
                 isProcessing = false;
+                analyzeSpinner.classList.add('hidden');
+                analyzeChatSpinner.classList.add('hidden');
+                analyzeText.textContent = 'Get Suggestions';
+                analyzeChatText.textContent = 'Ask AI';
             }
+        }
+
+        // Event listeners for both buttons
+        analyzeBtn.addEventListener('click', () => {
+            if (!eventType.value || !styleType.value) {
+                showStatus('Please select an event type and a desired style.', true);
+                return;
+            }
+            analyzePhoto();
+        });
+
+        analyzeChatBtn.addEventListener('click', () => {
+            const prompt = userPrompt.value.trim();
+            if (!prompt) {
+                showStatus('Please enter your request in the text box.', true);
+                return;
+            }
+            analyzePhoto(prompt);
         });
 
         // ---------- SIMPLE "MARKDOWN" RENDER (limited) ----------
         function renderMarkdownSimple(md) {
-            // convert headers (###)
             let s = md.replace(/^### (.+)/gm, '<h4>$1</h4>');
-            // convert bold (**Heading**)
             s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-            // convert list items (-)
             s = s.replace(/^- (.+)/gm, '<li>$1</li>');
             s = s.replace(/<li>(.+?)<\/li>/gs, '<ul><li>$1</li></ul>');
-            s = s.replace(/<\/ul>\n<ul>/g, ''); // combine consecutive lists
-            // convert newlines -> paragraphs
+            s = s.replace(/<\/ul>\n<ul>/g, '');
             s = s.replace(/\n{2,}/g, '</p><p>');
             s = '<div class="prose-custom text-sm text-slate-700 p-1"><p>' + s.trim() + '</p></div>';
-            // convert single newlines to <br/> within paragraphs
-            s = s.replace(/<p>([\s\S]+?)<\/p>/g, (match, p1) => {
-              return `<p>${p1.replace(/\n/g, '<br/>')}</p>`;
-            });
-            // Final cleanup for headers
+            s = s.replace(/<p>([\s\S]+?)<\/p>/g, (match, p1) => `<p>${p1.replace(/\n/g, '<br/>')}</p>`);
             s = s.replace(/<br\/><h4>/g, '</h4><h4>');
             s = s.replace(/<p><h4>/g, '<h4>');
             s = s.replace(/<\/h4><\/p>/g, '</h4>');
@@ -390,16 +441,18 @@ Provide a concise, detailed, and professional-sounding list of suggestions.`;
 
         // ---------- START OVER ----------
         startOverBtn.addEventListener('click', () => {
-            selectedFile = null; uploadFile = null;
+            selectedFile = null;
+            uploadFile = null;
             fileInput.value = '';
             previewCard.classList.add('hidden');
             suggestionsDiv.innerHTML = '<div class="text-slate-400">Your professional suggestions will appear here.</div>';
             eventType.selectedIndex = 0;
+            styleType.selectedIndex = 0;
+            userPrompt.value = '';
             showStatus('Reset.', false, 1500);
         });
 
         // ---------- INIT ----------
-        // Keyboard accessibility: Enter triggers file dialog on drop area
         drop.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') fileInput.click(); });
     </script>
 </body>
