@@ -136,7 +136,6 @@
 
                 <button id="start-over" class="w-full px-4 py-3 mt-3 rounded-xl bg-slate-100 text-slate-800 font-semibold transition-transform hover:scale-[1.01]">Start Over</button>
 
-                <p id="note" class="text-xs text-slate-500 mt-2 text-center">Your API key is handled directly by the frontend for a fast, seamless experience.</p>
                 <div id="status" class="text-sm mt-2 text-center text-rose-600 hidden"></div>
             </section>
 
